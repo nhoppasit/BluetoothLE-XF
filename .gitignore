@@ -1,0 +1,15 @@
+
+src/App1/.vs/
+src/App1/App1/App1.Android/obj/
+src/App1/App1/App1.Android/bin/
+src/App1/App1/App1/obj/
+src/App1/App1/App1/bin/
+src/BLEPluginDemo-master/.vs/
+src/BLEPluginDemo-master/Workshop/Workshop.Android/obj/
+src/BLEPluginDemo-master/Workshop/Workshop.Android/bin/
+src/BLEPluginDemo-master/Workshop/Workshop/obj/
+src/BLEPluginDemo-master/Workshop/Workshop/bin/
+src/BLEPluginDemo-master/Workshop/Workshop.UWP/obj/
+src/BLEPluginDemo-master/Workshop/Workshop.UWP/bin/
+src/BLEPluginDemo-master/Workshop/Workshop.iOS/obj/
+src/BLEPluginDemo-master/Workshop/Workshop.iOS/bin/
