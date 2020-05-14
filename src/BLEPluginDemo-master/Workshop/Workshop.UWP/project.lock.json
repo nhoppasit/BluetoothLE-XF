@@ -22408,12 +22408,12 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "E:\\Work2020\\REPO\\BluetoothLE-XF-00\\BLEPluginDemo-master\\Workshop\\Workshop.UWP\\Workshop.UWP.csproj",
+      "projectUniqueName": "E:\\Work2020\\REPO\\BluetoothLE-XF\\src\\BLEPluginDemo-master\\Workshop\\Workshop.UWP\\Workshop.UWP.csproj",
       "projectName": "Workshop.UWP",
-      "projectPath": "E:\\Work2020\\REPO\\BluetoothLE-XF-00\\BLEPluginDemo-master\\Workshop\\Workshop.UWP\\Workshop.UWP.csproj",
-      "projectJsonPath": "E:\\Work2020\\REPO\\BluetoothLE-XF-00\\BLEPluginDemo-master\\Workshop\\Workshop.UWP\\project.json",
+      "projectPath": "E:\\Work2020\\REPO\\BluetoothLE-XF\\src\\BLEPluginDemo-master\\Workshop\\Workshop.UWP\\Workshop.UWP.csproj",
+      "projectJsonPath": "E:\\Work2020\\REPO\\BluetoothLE-XF\\src\\BLEPluginDemo-master\\Workshop\\Workshop.UWP\\project.json",
       "packagesPath": "C:\\Users\\Project\\.nuget\\packages\\",
-      "outputPath": "E:\\Work2020\\REPO\\BluetoothLE-XF-00\\BLEPluginDemo-master\\Workshop\\Workshop.UWP\\obj\\",
+      "outputPath": "E:\\Work2020\\REPO\\BluetoothLE-XF\\src\\BLEPluginDemo-master\\Workshop\\Workshop.UWP\\obj\\",
       "projectStyle": "ProjectJson",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -22430,8 +22430,8 @@
       "frameworks": {
         "uap10.0.10586": {
           "projectReferences": {
-            "E:\\Work2020\\REPO\\BluetoothLE-XF-00\\BLEPluginDemo-master\\Workshop\\Workshop\\Workshop.csproj": {
-              "projectPath": "E:\\Work2020\\REPO\\BluetoothLE-XF-00\\BLEPluginDemo-master\\Workshop\\Workshop\\Workshop.csproj"
+            "E:\\Work2020\\REPO\\BluetoothLE-XF\\src\\BLEPluginDemo-master\\Workshop\\Workshop\\Workshop.csproj": {
+              "projectPath": "E:\\Work2020\\REPO\\BluetoothLE-XF\\src\\BLEPluginDemo-master\\Workshop\\Workshop\\Workshop.csproj"
             }
           }
         }
