@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using App1.Views;
 
 namespace App1
 {
@@ -16,6 +17,13 @@ namespace App1
         public MainPage()
         {
             InitializeComponent();
+
+        }
+
+        private void btnDeviceView_Clicked(object sender, EventArgs e)
+        {
+            App.Current.MainPage = new DeviceView();
+
         }
     }
 }

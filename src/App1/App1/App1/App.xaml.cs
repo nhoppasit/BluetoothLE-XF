@@ -10,7 +10,8 @@ namespace App1
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            //MainPage = new MainPage();
+            MainPage = new Views.DeviceView();
         }
 
         protected override void OnStart()

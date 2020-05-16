@@ -4,13 +4,19 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:vm="clr-namespace:App1.ViewModels"
              x:Class="App1.MainPage">
+    
+    <ContentPage.BindingContext>
+        <vm:MainViewModel></vm:MainViewModel>
+    </ContentPage.BindingContext>
 
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
-    </StackLayout>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="{Binding LabelText}" BackgroundColor="Blue" TextColor="White"/>
+            <Button Text="Click Me !"  BackgroundColor="Blue" TextColor="Yellow" 
+                    Command="{Binding ChangeTextCommand}"></Button>
+        </StackLayout>
+    </ContentPage.Content>
 
 </ContentPage>
