@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Acr.UserDialogs" Version="7.0.4" />
+        <PackageReference Include="Acr.XamForms" Version="4.0.1" />
+        <PackageReference Include="Plugin.BluetoothLE" Version="6.3.0.19" />
+        <PackageReference Include="Prism.Autofac.Forms" Version="7.1.0.431" />
+        <PackageReference Include="ReactiveUI.Fody" Version="9.19.5" />
+        <PackageReference Include="System.Reactive" Version="4.1.5" />
+        <PackageReference Include="Xamarin.Forms" Version="4.1.0.581479" />
+    </ItemGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+
+</Project>

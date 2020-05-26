@@ -16,3 +16,14 @@ src/BLEPluginDemo-master/Workshop/Workshop.iOS/bin/
 xamarin-bluetooth-le-master
 *.zip
 Monkey.BluetoothLE-master
+bluetoothle-master
+src/BLE01/.vs
+src/BLE01/Samples.Droid/bin
+src/BLE01/Samples.Droid/obj
+src/BLE01/Samples.iOS/bin
+src/BLE01/Samples.iOS/obj
+src/BLE01/Samples.Uwp/bin
+src/BLE01/Samples.Uwp/obj
+src/BLE01/Samples/.vs
+src/BLE01/Samples/bin
+src/BLE01/Samples/obj
