@@ -88,7 +88,11 @@ namespace Samples
                                         {
                                             dev = new ScanResultViewModel();
                                             dev.TrySet(result);
-                                            list.Add(dev);
+                                            if (dev.Name.ToUpper().Equals("MLT-BT05"))
+                                            {
+                                                list.Add(dev);
+                                                break;
+                                            }
                                         }
                                     }
                                     if (list.Any())
@@ -114,7 +118,49 @@ namespace Samples
         public override void OnAppearing()
         {
             base.OnAppearing();
-            this.IsScanning = false;
+            this.IsScanning = true;
+            myScan();
+        }
+
+        void myScan()
+        {
+            this.Devices.Clear();
+
+            this.IsScanning = true;
+            this.scan = this
+                .adapter
+                .Scan()
+                .Buffer(TimeSpan.FromSeconds(1))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(
+                    results =>
+                    {
+                        var list = new List<ScanResultViewModel>();
+                        foreach (var result in results)
+                        {
+                            var dev = this.Devices.FirstOrDefault(x => x.Uuid.Equals(result.Device.Uuid));
+
+                            if (dev != null)
+                            {
+                                dev.TrySet(result);
+                            }
+                            else
+                            {
+                                dev = new ScanResultViewModel();
+                                dev.TrySet(result);
+                                if (dev.Name.ToUpper().Equals("MLT-BT05"))
+                                {
+                                    list.Add(dev);
+                                    break;
+                                }
+                            }
+                        }
+                        if (list.Any())
+                            this.Devices.AddRange(list);
+                    },
+                    ex => UserDialogs.Instance.Alert(ex.ToString())
+                )
+                .DisposeWith(this.DeactivateWith);
         }
 
 

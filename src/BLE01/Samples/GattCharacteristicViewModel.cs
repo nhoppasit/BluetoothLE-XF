@@ -44,6 +44,14 @@ namespace Samples
         }
 
 
+        bool preNotifying;
+        public bool PreNotifying
+        {
+            get => this.preNotifying;
+            private set => this.RaiseAndSetIfChanged(ref this.preNotifying, value);
+        }
+
+
         bool valueAvailable;
         public bool IsValueAvailable
         {
@@ -73,10 +81,10 @@ namespace Samples
                 .SetCancel();
 
             if (this.Characteristic.CanWriteWithResponse())
-                cfg.Add("Write With Response", () => this.DoWrite(true));
+                cfg.Add("Write With Response", () => this.DoWrite0(true));
 
             if (this.Characteristic.CanWriteWithoutResponse())
-                cfg.Add("Write Without Response", () => this.DoWrite(false));
+                cfg.Add("Write ?", () => this.DoWrite(false));
 
             if (this.Characteristic.CanWrite())
                 cfg.Add("Send Test BLOB", this.SendBlob);
@@ -91,6 +99,8 @@ namespace Samples
             }
             if (cfg.Options.Any())
                 UserDialogs.Instance.ActionSheet(cfg.SetCancel());
+
+            setNotify();
         }
 
 
@@ -131,7 +141,7 @@ namespace Samples
         }
 
 
-        async void DoWrite(bool withResponse)
+        async void DoWrite0(bool withResponse)
         {
             var utf8 = await UserDialogs.Instance.ConfirmAsync("Write value from UTF8 or HEX?", okText: "UTF8", cancelText: "HEX");
             var result = await UserDialogs.Instance.PromptAsync("Please enter a write value", this.Description);
@@ -139,9 +149,16 @@ namespace Samples
             if (result.Ok && !String.IsNullOrWhiteSpace(result.Text))
             {
                 var v = result.Text.Trim();
-                var bytes = utf8 ? Encoding.UTF8.GetBytes(v) : v.FromHexString();
+                //var bytes = utf8 ? Encoding.UTF8.GetBytes(v) : v.FromHexString();
+                byte[] bytes = new byte[] { 0xFE, 0x3F, 0xCA };
+
                 if (withResponse)
                 {
+                    if (!this.IsNotifying)
+                    {
+                        setNotify();
+                    }
+
                     this.Characteristic
                         .Write(bytes)
                         .Timeout(TimeSpan.FromSeconds(2))
@@ -163,6 +180,60 @@ namespace Samples
             }
         }
 
+        async void DoWrite(bool withResponse)
+        {
+            byte[] bytes = new byte[] { 0xFE, 0x3F, 0xCA };
+
+            /*
+                 * ---------------------------------------------------------------------
+                 * Turn notifying to ON.
+                 * ---------------------------------------------------------------------
+                 */
+            if (!this.IsNotifying)
+            {
+                setNotify();
+            }
+            /*
+             * ---------------------------------------------------------------------
+             * Write
+             * ---------------------------------------------------------------------
+             */
+            this.Characteristic
+                .Write(bytes)
+                .Timeout(TimeSpan.FromSeconds(2))
+                .Subscribe(
+                    x => act1(),
+                    ex => UserDialogs.Instance.Alert(ex.ToString())
+                );
+
+            Stopwatch swReadReturn = new Stopwatch();
+            swReadReturn.Start();
+            bool isTimedout = false;
+            while (!this.valueAvailable)
+            {
+                Thread.Sleep(100);
+                if (3000 < swReadReturn.ElapsedMilliseconds)
+                {
+                    isTimedout = true;
+                    break;
+                }
+            }
+            swReadReturn.Stop();
+            if (isTimedout)
+            {
+                UserDialogs.Instance.Alert("Time out 1!");
+            }
+            else
+            {
+                UserDialogs.Instance.Alert(this.Value.ToString());
+            }
+        }
+
+        void act1()
+        {
+            UserDialogs.Instance.Toast("Write Complete");
+            Debug.WriteLine(">>GOOD JOB<<");
+        }
 
         async void ToggleNotify()
         {
@@ -188,6 +259,26 @@ namespace Samples
             }
         }
 
+        void setNotify()
+        {
+            this.IsNotifying = true;
+            this.watcher = this.Characteristic
+                .RegisterAndNotify()
+                .Subscribe(
+                    x => this.SetReadValue(x, true),
+                    ex => UserDialogs.Instance.Alert(ex.ToString())
+                );
+
+            byte[] bytes = new byte[] { 0xFE, 0x3F, 0xCA };
+
+            this.Characteristic
+                        .Write(bytes)
+                        .Timeout(TimeSpan.FromSeconds(2))
+                        .Subscribe(
+                            x => UserDialogs.Instance.Toast("Write Complete"),
+                            ex => UserDialogs.Instance.Alert(ex.ToString())
+                        );
+        }
 
         async void DoRead()
         {

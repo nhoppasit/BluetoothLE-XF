@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -164,10 +165,18 @@ namespace Samples
                                 $"{chs.Service.Description} ({chs.Service.Uuid})",
                                 chs.Service.Uuid.ToString()
                             );
-                            this.GattCharacteristics.Add(service);
+                            Debug.WriteLine(service.ShortName.ToString());
+                            if (service.ShortName.ToUpper().Contains("0000FFE0"))
+                            {
+                                this.GattCharacteristics.Add(service);
+                            }
                         }
 
-                        service.Add(new GattCharacteristicViewModel(chs));
+                        Debug.WriteLine(chs.Uuid.ToString());
+                        if (chs.Uuid.ToString().ToUpper().Contains("0000FFE1"))
+                        {
+                            service.Add(new GattCharacteristicViewModel(chs));
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -176,6 +185,8 @@ namespace Samples
                     }
                 })
                 .DisposeWith(this.DeactivateWith);
+
+            this.device.Connect(); //
         }
 
 

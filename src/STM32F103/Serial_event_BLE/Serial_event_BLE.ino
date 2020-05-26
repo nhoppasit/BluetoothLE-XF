@@ -11,14 +11,19 @@
 //
 #define STX ':'
 #define ETX '\n'
+#define STX1 0xFD
+#define STX2 0xFE
+#define ETX1 0xCA
 #define ACK '*'
 #define NAK '!'
 String inputString = "";     // a String to hold incoming data
 bool stringComplete = false; // whether the string is complete
 bool STX_COME = false;
+String inputString1 = "";     // a String to hold incoming data
+bool stringComplete1 = false; // whether the string is complete
+bool STX_COME1 = false;
+bool STX_COME2 = false;
 
-// Unlocked flag
-bool IsUnlocked = true;
 //
 unsigned long t0Blink = 0;
 bool blinkState = 0;
@@ -36,7 +41,7 @@ void setup()
   //
   Serial.begin(9600);
   delay(250);
-  Serial1.begin(9600);
+  Serial2.begin(9600);
   delay(250);
 
   Serial.print(DEVICE_NAME);
@@ -50,13 +55,19 @@ void setup()
 void loop()
 {
   serialEvent();
-  update_input();
-  blink(blinkFlag);
-  blinkON(IsUnlocked && stringComplete && inputString.substring(0, 1).equals(CMD_BLINK_ON));
-  blinkOFF(IsUnlocked && stringComplete && inputString.equals(CMD_BLINK_OFF));
-  info(IsUnlocked && stringComplete && inputString.equals(CMD_INFO));
+  serialEvent1();
   //
-  ClearSerialEvent(stringComplete);
+  blink(blinkFlag);
+  //
+  blinkON(stringComplete && inputString.substring(0, 1).equals(CMD_BLINK_ON));
+  blinkOFF(stringComplete && inputString.equals(CMD_BLINK_OFF));
+  info(stringComplete && inputString.equals(CMD_INFO));
+  //
+  blinkON(STX_COME1 && stringComplete1 && inputString1.substring(0, 1).equals(CMD_BLINK_ON));
+  blinkOFF(STX_COME1 && stringComplete1 && inputString1.equals(CMD_BLINK_OFF));
+  info1(STX_COME2 && stringComplete1 && inputString1.equals(CMD_INFO));
+  //
+  ClearSerialEvent(stringComplete || stringComplete1);
 } // LOOP END.
 //
 #pragma region BLINK
@@ -135,6 +146,14 @@ void info(bool flag)
     Serial.println();
   }
 } // INFO END.
+void info1(bool flag)
+{
+  if (flag)
+  {
+    Serial2.print(DEVICE_NAME);
+    Serial2.println();
+  }
+} // INFO END.
 
 /*
 ------------------------------------------------------------------------
@@ -151,10 +170,6 @@ void serialEvent()
 #if _DEBUG_SERIAL_
     Serial.println(inChar);
 #endif
-
-    _OPT_SHOW_INPUT_ = false;
-    _OPT_SHOW_PWM_ = false;
-    stop_all_motor();
 
     // add it to the inputString:
     if (STX_COME)
@@ -186,16 +201,56 @@ void serialEvent()
 #endif
       return;
     }
+    
+  }
+}
+//
+void serialEvent1()
+{
+  if (Serial2.available())
+  {
 
-    if (!STX_COME && IsUnlocked && inChar != ETX && inChar != '\r')
+    // get the new byte:
+    char inChar = (char)Serial2.read();
+    Serial.println(inChar);
+    
+    // add it to the inputString:
+    if (STX_COME1 || STX_COME2)
     {
-      IsUnlocked = false;
-      blinkFlag = false;
-      blinkOFF(true);
-      Serial.print(NAK);
-      Serial.println("CL");
+      if (inChar == ETX1)
+      {
+        stringComplete1 = true;
+        Serial.println(inputString1);
+        Serial.println("ETX1 come.");
+        return;
+      }
+      if (inChar != STX1 && inChar != STX2 && inChar != '\n' && inChar != '\r' && inChar != ETX1)
+      {
+        inputString1 += inChar;
+      }
       return;
     }
+
+    // if the incoming character is a newline, set a flag so the main loop can
+    // do something about it:
+    if (inChar == STX1)
+    {
+      STX_COME1 = true;
+      stringComplete1 = false;
+      inputString1 = "";
+      Serial.println("STX1 come.");
+      return;
+    }
+
+    if (inChar == STX2)
+    {
+      STX_COME2 = true;
+      stringComplete1 = false;
+      inputString1 = "";
+      Serial.println("STX2 come.");
+      return;
+    }
+
   }
 }
 //
@@ -209,6 +264,10 @@ void ClearSerialEvent(bool flag)
     STX_COME = false;
     stringComplete = false;
     inputString = "";
+    STX_COME1 = false;
+    STX_COME2 = false;
+    stringComplete1 = false;
+    inputString1 = "";
   }
 }
 
